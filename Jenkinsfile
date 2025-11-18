@@ -1,13 +1,17 @@
 pipeline {
     agent any
 
+    environment {
+        IMAGE_NAME = "myapp"           // set your image name
+        IMAGE_TAG  = "latest"          // or use: "${env.BUILD_NUMBER}"
+    }
+
     stages {
-        
+
         stage('Build Docker Image') {
             steps {
                 script {
-                    //dockerImage = docker.build("myapp:${env.BUILD_NUMBER}")
-                    sh "docker build -t ${IMAGE_NAME}:${IMAGE_TAG} ." 
+                    sh "docker build -t ${IMAGE_NAME}:${IMAGE_TAG} ."
                 }
             }
         }
@@ -15,9 +19,10 @@ pipeline {
         stage('Run Container') {
             steps {
                 script {
-                    //dockerImage.run("-p 5000:5000")
-                    sh "docker run -d -p 5000:5000 --name demo-container ${IMAGE_NAME}:${IMAGE_TAG}" 
+                    // Stop and remove existing container if already running
+                    sh "docker rm -f demo-container || true"
 
+                    sh "docker run -d -p 5000:5000 --name demo-container ${IMAGE_NAME}:${IMAGE_TAG}"
                 }
             }
         }
