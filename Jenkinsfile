@@ -1,44 +1,25 @@
 pipeline {
     agent any
 
-    parameters {
-        choice(name: 'ENVIRONMENT', choices: ['dev', 'staging', 'prod'], description: 'Select the environment to deploy')
-    }
-
     stages {
-
-        stage('Print Selected Environment') {
-            steps {
-                echo "Selected Environment: ${params.ENVIRONMENT}"
-            }
-        }
-
-        stage('Conditional Execution') {
+        
+        stage('Build Docker Image') {
             steps {
                 script {
-                    if (params.ENVIRONMENT == 'dev') {
-                        echo "Deploying to Development environment"
-                        // Dev deployment commands
-                    } else if (params.ENVIRONMENT == 'staging') {
-                        echo "Deploying to Staging environment"
-                        // Staging deployment commands
-                    } else if (params.ENVIRONMENT == 'prod') {
-                        echo "Deploying to Production environment"
-                        // Production deployment commands
-                    } else {
-                        error("Invalid environment selected!")
-                    }
+                    //dockerImage = docker.build("myapp:${env.BUILD_NUMBER}")
+                    sh "docker build -t ${IMAGE_NAME}:${IMAGE_TAG} ." 
                 }
             }
         }
-    }
 
-    post {
-        success {
-            echo 'Pipeline succeeded!'
-        }
-        failure {
-            echo 'Pipeline failed.'
+        stage('Run Container') {
+            steps {
+                script {
+                    //dockerImage.run("-p 5000:5000")
+                    sh "docker run -d -p 5000:5000 --name demo-container ${IMAGE_NAME}:${IMAGE_TAG}" 
+
+                }
+            }
         }
     }
 }
