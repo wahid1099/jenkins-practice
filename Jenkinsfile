@@ -1,30 +1,24 @@
 pipeline {
     agent any
 
-    environment {
-        IMAGE_NAME = "myapp"           // set your image name
-        IMAGE_TAG  = "latest"          // or use: "${env.BUILD_NUMBER}"
-    }
-
     stages {
-
-        stage('Build Docker Image') {
+        stage('Build') {
             steps {
-                script {
-                    sh "docker build -t ${IMAGE_NAME}:${IMAGE_TAG} ."
-                }
+                echo 'Building...'
             }
         }
+    }
 
-        stage('Run Container') {
-            steps {
-                script {
-                    // Stop and remove existing container if already running
-                    sh "docker rm -f demo-container || true"
-
-                    sh "docker run -d -p 5000:5000 --name demo-container ${IMAGE_NAME}:${IMAGE_TAG}"
-                }
-            }
+    post {
+        success {
+            emailext subject: 'Build SUCCESS: ${JOB_NAME}',
+                     body: 'Job ${JOB_NAME} build #${BUILD_NUMBER} was successful.',
+                     to: 'your-email@gmail.com'
+        }
+        failure {
+            emailext subject: 'Build FAILURE: ${JOB_NAME}',
+                     body: 'Job ${JOB_NAME} build #${BUILD_NUMBER} failed.',
+                     to: 'your-email@gmail.com'
         }
     }
 }
