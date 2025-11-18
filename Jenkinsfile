@@ -6,6 +6,7 @@ pipeline {
     }
 
     stages {
+
         stage('Print Selected Environment') {
             steps {
                 echo "Selected Environment: ${params.ENVIRONMENT}"
@@ -17,13 +18,13 @@ pipeline {
                 script {
                     if (params.ENVIRONMENT == 'dev') {
                         echo "Deploying to Development environment"
-                        // Add dev deployment logic here
+                        // Dev deployment commands
                     } else if (params.ENVIRONMENT == 'staging') {
                         echo "Deploying to Staging environment"
-                        // Add staging deployment logic here
+                        // Staging deployment commands
                     } else if (params.ENVIRONMENT == 'prod') {
                         echo "Deploying to Production environment"
-                        // Add production deployment logic here
+                        // Production deployment commands
                     } else {
                         error("Invalid environment selected!")
                     }
@@ -31,13 +32,13 @@ pipeline {
             }
         }
     }
-}
 
-post {
-    success {
-        echo 'Pipeline succeeded!'
-    }
-    failure {
-        echo 'Pipeline failed.'
+    post {
+        success {
+            echo 'Pipeline succeeded!'
+        }
+        failure {
+            echo 'Pipeline failed.'
+        }
     }
 }
