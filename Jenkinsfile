@@ -13,12 +13,12 @@ pipeline {
         success {
             emailext subject: 'Build SUCCESS: ${JOB_NAME}',
                      body: 'Job ${JOB_NAME} build #${BUILD_NUMBER} was successful.',
-                     to: 'wahidahmed890@gmail.com'
+                     to: 'test@gmail.com'
         }
         failure {
             emailext subject: 'Build FAILURE: ${JOB_NAME}',
                      body: 'Job ${JOB_NAME} build #${BUILD_NUMBER} failed.',
-                     to: 'wahidahmed890@gmail.com'
+                     to: 'test@gmail.com'
         }
     }
 }
